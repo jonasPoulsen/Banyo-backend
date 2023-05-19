@@ -63,12 +63,15 @@ class Auth extends JwtHandler
                     if (
                         array_key_exists('DeleteUser', $this->headers) &&
                         intval($user['admin']) === 1 && 
-                        $allUsersUpdated = $this->deleteUser(intval($this->headers['DeleteUser']))
+                        $this->deleteUser(intval($this->headers['DeleteUser']))
                     ){
-                        return [
-                            "success" => 1,
-                            "users" => $allUsersUpdated
-                        ];
+                        if ($allUsers = $this->fetchUsers()) {
+                            return [
+                                "success" => 1,
+                                "users" => $allUsers
+                            ];
+                        }
+                        
 
                     }
 
@@ -139,7 +142,8 @@ class Auth extends JwtHandler
 
             if ($query_stmt->rowCount()) :
                 //return $query_stmt->fetchAll(PDO::FETCH_ASSOC);
-                return $this->fetchUsers();
+                //return $this->fetchUsers();
+                return true;
             else :
                 return false;
             endif;
